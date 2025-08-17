@@ -15,13 +15,20 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'gradle'
-
+      
       - name: Decode and Rename Keystore
         run: |
           echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > aaps.keystore
           mkdir -p keystore
           cp aaps.keystore keystore/demokeystore.jks
           ls -la keystore/demokeystore.jks
+
+      - name: Debug - Check keystore
+        run: |
+          echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > keystore/demokeystore.jks
+          ls -la keystore/demokeystore.jks
+          file keystore/demokeystore.jks
+          keytool -list -keystore keystore/demokeystore.jks -storepass "123456" || echo "❌ 密码或文件错误！"
 
       - name: Build Full Release
         run: |
