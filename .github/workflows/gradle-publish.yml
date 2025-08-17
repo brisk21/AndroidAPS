@@ -17,6 +17,8 @@ jobs:
         run: |
           git reset --hard
           git clean -xffd
+          # 确保 gradle-wrapper 没被改
+          git checkout -- gradle/wrapper/gradle-wrapper.properties
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
