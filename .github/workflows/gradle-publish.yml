@@ -3,8 +3,6 @@ name: Android CI
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   build:
@@ -12,6 +10,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        clean: true
+
+    - name: Clean git workspace
+      run: |
+        git reset --hard
+        git clean -xffd
 
     - name: Set up JDK 21
       uses: actions/setup-java@v3
@@ -25,14 +30,10 @@ jobs:
 
     - name: Build Full Release
       run: |
-        # 创建 keystore 目录
         mkdir -p keystore
-        # 解码并生成 jks 文件
         echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > keystore/demokeystore.jks
-        # 验证文件
         ls -la keystore/demokeystore.jks
 
-        # 构建并注入签名信息
         ./gradlew assembleFullRelease \
           -Pandroid.injected.signing.store.file=keystore/demokeystore.jks \
           -Pandroid.injected.signing.store.password="${{ secrets.STORE_PASSWORD }}" \
@@ -44,4 +45,3 @@ jobs:
       with:
         name: aaps-apk
         path: app/build/outputs/apk/full/release/*.apk
-        if-no-files-found: error
