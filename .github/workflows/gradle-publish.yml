@@ -21,6 +21,8 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: |
+          echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > keystore/demokeystore.jks
+          ls -la keystore/demokeystore.jks
           export storePassword=${{ secrets.STORE_PASSWORD }}
           export keyAlias=${{ secrets.KEY_ALIAS }}
           export keyPassword=${{ secrets.KEY_PASSWORD }}
