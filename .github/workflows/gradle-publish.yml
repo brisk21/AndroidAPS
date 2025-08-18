@@ -33,8 +33,8 @@ jobs:
       - name: Build Full Release
         run: |
           mkdir -p keystore
-          echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > app/keystore/demokeystore.jks
-          ls -la app/keystore/demokeystore.jks
+          echo "${{ secrets.STORE_FILE }}" | tr -d '\n' | base64 -d > keystore/demokeystore.jks
+          ls -la keystore/demokeystore.jks
           
           ./gradlew assembleFullRelease \
             -Pandroid.injected.signing.store.file=keystore/demokeystore.jks \
